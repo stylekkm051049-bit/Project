@@ -1,0 +1,412 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNwWsK7QWkIpr1EGsWutkaH",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/stylekkm051049-bit/Project/blob/%E0%B8%9E%E0%B8%B5%E0%B8%A3%E0%B8%9E%E0%B8%B1%E0%B8%92%E0%B8%99%E0%B9%8C-%E0%B8%A4%E0%B8%97%E0%B8%98%E0%B8%B4%E0%B9%8C%E0%B8%AA%E0%B8%A2%E0%B8%B2%E0%B8%A1/%E0%B8%AA%E0%B9%88%E0%B8%A7%E0%B8%99%E0%B8%97%E0%B8%B5%E0%B9%88%208-9\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# ขั้นที่ 8 — วิเคราะห์ข้อมูลด้วย pandas และ SQL\n",
+        "## วิเคราะห์ด้วย PANDAS"
+      ],
+      "metadata": {
+        "id": "UmPsdsNTFVfC"
+      }
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "-K4y0yYayQ39"
+      },
+      "outputs": [],
+      "source": [
+        "\n",
+        "# คอร์สไหนมีผู้สมัครมากที่สุด\n",
+        "q1_pandas = (\n",
+        "    registration_df[\n",
+        "        registration_df[\"สถานะการลงทะเบียน\"] == \"ลงทะเบียนสำเร็จ\"\n",
+        "    ]\n",
+        "    .groupby([\"รหัสคอร์ส\", \"ชื่อคอร์ส\"])\n",
+        "    .size()\n",
+        "    .reset_index(name=\"จำนวนผู้สมัคร\")\n",
+        "    .sort_values(\"จำนวนผู้สมัคร\", ascending=False)\n",
+        ")\n",
+        "\n",
+        "display(q1_pandas)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# คอร์สไหนรายได้มากที่สุด\n",
+        "q2_pandas = (\n",
+        "    registration_df[\n",
+        "        registration_df[\"สถานะการลงทะเบียน\"] == \"ลงทะเบียนสำเร็จ\"\n",
+        "    ]\n",
+        "    .groupby([\"รหัสคอร์ส\", \"ชื่อคอร์ส\"])\n",
+        "    .agg(\n",
+        "        รายได้รวม=(\"ยอดชำระสุทธิ (บาท)\", \"sum\"),\n",
+        "        จำนวนผู้สมัคร=(\"รหัสนักเรียน\", \"count\"),\n",
+        "        ค่าเรียนเฉลี่ย=(\"ยอดชำระสุทธิ (บาท)\", \"mean\")\n",
+        "    )\n",
+        "    .reset_index()\n",
+        "    .sort_values(\"รายได้รวม\", ascending=False)\n",
+        ")\n",
+        "\n",
+        "display(q2_pandas)\n"
+      ],
+      "metadata": {
+        "id": "kLsXQP1VFl_1"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# คอร์สไหนรายได้มากที่สุด\n",
+        "q2_pandas = (\n",
+        "    registration_df[\n",
+        "        registration_df[\"สถานะการลงทะเบียน\"] == \"ลงทะเบียนสำเร็จ\"\n",
+        "    ]\n",
+        "    .groupby([\"รหัสคอร์ส\", \"ชื่อคอร์ส\"])\n",
+        "    .agg(\n",
+        "        รายได้รวม=(\"ยอดชำระสุทธิ (บาท)\", \"sum\"),\n",
+        "        จำนวนผู้สมัคร=(\"รหัสนักเรียน\", \"count\"),\n",
+        "        ค่าเรียนเฉลี่ย=(\"ยอดชำระสุทธิ (บาท)\", \"mean\")\n",
+        "    )\n",
+        "    .reset_index()\n",
+        "    .sort_values(\"รายได้รวม\", ascending=False)\n",
+        ")\n",
+        "\n",
+        "display(q2_pandas)"
+      ],
+      "metadata": {
+        "id": "8cOtJkNKFo5M"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# โรงเรียนไหนมีนักเรียนลงทะเบียนมากที่สุด?\n",
+        "q4_pandas = (\n",
+        "    registration_df[\n",
+        "        registration_df[\"สถานะการลงทะเบียน\"] == \"ลงทะเบียนสำเร็จ\"\n",
+        "    ]\n",
+        "    .groupby(\"โรงเรียน\")\n",
+        "    .size()\n",
+        "    .reset_index(name=\"จำนวนผู้ลงทะเบียน\")\n",
+        "    .sort_values(\"จำนวนผู้ลงทะเบียน\", ascending=False)\n",
+        ")\n",
+        "\n",
+        "display(q4_pandas)"
+      ],
+      "metadata": {
+        "id": "cTjI3bT3Ftic"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# รายได้รวมทั้งหมด\n",
+        "total_revenue = registration_df.loc[\n",
+        "    registration_df[\"สถานะการลงทะเบียน\"] == \"ลงทะเบียนสำเร็จ\",\n",
+        "    \"ยอดชำระสุทธิ (บาท)\"\n",
+        "].sum()\n",
+        "\n",
+        "print(\n",
+        "    \"รายได้รวมทั้งหมด:\",\n",
+        "    format_currency(total_revenue)\n",
+        ")"
+      ],
+      "metadata": {
+        "id": "5aX2iHTIF2fq"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# วิเคราะห์คำถามเดียวกันด้วย SQL"
+      ],
+      "metadata": {
+        "id": "SW8-QCwhF8mC"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "conn = sqlite3.connect(\"tutoring_school.db\")"
+      ],
+      "metadata": {
+        "id": "05z_VITrF-jE"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# คอร์สไหนมีผู้สมัครมากที่สุด?\n",
+        "q1_sql = pd.read_sql_query(\"\"\"\n",
+        "SELECT\n",
+        "    \"รหัสคอร์ส\",\n",
+        "    \"ชื่อคอร์ส\",\n",
+        "    COUNT(*) AS จำนวนผู้สมัคร\n",
+        "FROM registration\n",
+        "WHERE \"สถานะการลงทะเบียน\" = 'ลงทะเบียนสำเร็จ'\n",
+        "GROUP BY \"รหัสคอร์ส\", \"ชื่อคอร์ส\"\n",
+        "ORDER BY จำนวนผู้สมัคร DESC\n",
+        "\"\"\", conn)\n",
+        "\n",
+        "display(q1_sql)"
+      ],
+      "metadata": {
+        "id": "7kRAsQrfGD5n"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# คอร์สไหนสร้างรายได้มากที่สุด?\n",
+        "q2_sql = pd.read_sql_query(\"\"\"\n",
+        "SELECT\n",
+        "    \"รหัสคอร์ส\",\n",
+        "    \"ชื่อคอร์ส\",\n",
+        "    ROUND(SUM(\"ยอดชำระสุทธิ (บาท)\"), 2) AS รายได้รวม\n",
+        "FROM registration\n",
+        "WHERE \"สถานะการลงทะเบียน\" = 'ลงทะเบียนสำเร็จ'\n",
+        "GROUP BY \"รหัสคอร์ส\", \"ชื่อคอร์ส\"\n",
+        "ORDER BY รายได้รวม DESC\n",
+        "\"\"\", conn)\n",
+        "\n",
+        "display(q2_sql)"
+      ],
+      "metadata": {
+        "id": "2rJRQPX8GJGZ"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# โรงเรียนไหนมีนักเรียนลงทะเบียนมากที่สุด?\n",
+        "q4_sql = pd.read_sql_query(\"\"\"\n",
+        "SELECT\n",
+        "    \"โรงเรียน\",\n",
+        "    COUNT(*) AS จำนวนผู้ลงทะเบียน\n",
+        "FROM registration\n",
+        "WHERE \"สถานะการลงทะเบียน\" = 'ลงทะเบียนสำเร็จ'\n",
+        "GROUP BY \"โรงเรียน\"\n",
+        "ORDER BY จำนวนผู้ลงทะเบียน DESC\n",
+        "\"\"\", conn)\n",
+        "\n",
+        "display(q4_sql)"
+      ],
+      "metadata": {
+        "id": "ZiQCILchGODA"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "sql_total = pd.read_sql_query(\"\"\"\n",
+        "SELECT\n",
+        "    ROUND(SUM(\"ยอดชำระสุทธิ (บาท)\"), 2) AS รายได้รวมทั้งหมด\n",
+        "FROM registration\n",
+        "WHERE \"สถานะการลงทะเบียน\" = 'ลงทะเบียนสำเร็จ'\n",
+        "\"\"\", conn)\n",
+        "\n",
+        "display(sql_total)"
+      ],
+      "metadata": {
+        "id": "9pHLpT1NGTpG"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# ขั้นที่ 9 — สร้างกราฟและสรุปผล"
+      ],
+      "metadata": {
+        "id": "DG7mVNX_GeKI"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# ติดตั้งฟอนต์ไทย\n",
+        "!apt-get install -y fonts-thai-tlwg -qq\n",
+        "\n",
+        "import matplotlib.pyplot as plt\n",
+        "import matplotlib.font_manager as fm\n",
+        "import glob\n",
+        "import os\n",
+        "\n",
+        "# ค้นหาไฟล์ฟอนต์ไทยทั้งหมด\n",
+        "thai_fonts = glob.glob(\n",
+        "    \"/usr/share/fonts/**/*.ttf\",\n",
+        "    recursive=True\n",
+        ")\n",
+        "\n",
+        "# แสดงฟอนต์ที่พบ\n",
+        "thai_fonts = [\n",
+        "    f for f in thai_fonts\n",
+        "    if any(x in os.path.basename(f).lower()\n",
+        "           for x in [\"garuda\", \"loma\", \"waree\", \"kinnari\", \"tlwg\"])\n",
+        "]\n",
+        "\n",
+        "print(\"ฟอนต์ไทยที่พบ:\")\n",
+        "for f in thai_fonts:\n",
+        "    print(f)\n",
+        "\n",
+        "# ใช้ฟอนต์ตัวแรก\n",
+        "font_path = thai_fonts[0]\n",
+        "\n",
+        "# เพิ่มฟอนต์เข้า Matplotlib\n",
+        "fm.fontManager.addfont(font_path)\n",
+        "\n",
+        "# สร้าง FontProperties จากไฟล์โดยตรง\n",
+        "thai_font = fm.FontProperties(fname=font_path)\n",
+        "\n",
+        "print(\"กำลังใช้:\", thai_font.get_name())\n",
+        "print(\"ไฟล์:\", font_path)"
+      ],
+      "metadata": {
+        "id": "W7-mEJfKGf9E"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# กราฟ 1: จำนวนผู้สมัครแต่ละคอร์ส\n",
+        "# Bar Chart\n",
+        "\n",
+        "plt.figure(figsize=(10, 6))\n",
+        "plt.bar( q1_pandas[\"ชื่อคอร์ส\"], q1_pandas[\"จำนวนผู้สมัคร\"])\n",
+        "plt.title( \"จำนวนผู้สมัครแยกตามคอร์ส\", fontproperties=thai_font)\n",
+        "plt.xlabel( \"คอร์ส\", fontproperties=thai_font)\n",
+        "plt.ylabel(\"จำนวนผู้สมัคร (คน)\", fontproperties=thai_font)\n",
+        "plt.xticks( rotation=45, ha=\"right\", fontproperties=thai_font)\n",
+        "plt.yticks(fontproperties=thai_font)\n",
+        "\n",
+        "plt.tight_layout()\n",
+        "plt.show()\n",
+        "\n",
+        "# สรุปคอร์สที่มีผู้สมัครมากที่สุด\n",
+        "max_applicants = q1_pandas[\"จำนวนผู้สมัคร\"].max()\n",
+        "top_courses = q1_pandas[ q1_pandas[\"จำนวนผู้สมัคร\"] == max_applicants]\n",
+        "print(\"คอร์สที่มีผู้สมัครมากที่สุด จำนวน\", max_applicants, \"คน ได้แก่\")\n",
+        "for _, row in top_courses.iterrows():\n",
+        "    print(\"-\", row[\"ชื่อคอร์ส\"])\n"
+      ],
+      "metadata": {
+        "id": "FwDEX_iAGrfa"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# กราฟ 2: รายได้ของแต่ละคอร์ส\n",
+        "# Line Chart\n",
+        "plt.figure(figsize=(10, 5))\n",
+        "plt.plot( q2_pandas[\"ชื่อคอร์ส\"], q2_pandas[\"รายได้รวม\"], marker=\"o\" )\n",
+        "plt.title( \"รายได้รวมแยกตามคอร์ส\", fontproperties=thai_font )\n",
+        "plt.xlabel( \"คอร์ส\", fontproperties=thai_font )\n",
+        "plt.ylabel( \"รายได้รวม (บาท)\", fontproperties=thai_font )\n",
+        "plt.xticks( rotation=45, ha=\"right\", fontproperties=thai_font )\n",
+        "plt.yticks(fontproperties=thai_font)\n",
+        "plt.grid(axis=\"y\", alpha=0.3)\n",
+        "plt.tight_layout()\n",
+        "plt.show()\n",
+        "\n",
+        "top_revenue = q2_pandas.iloc[0]\n",
+        "print( \"สรุปผล: คอร์สที่สร้างรายได้สูงที่สุดคือ\", top_revenue[\"ชื่อคอร์ส\"], \"ด้วยรายได้รวม\", f\"{top_revenue['รายได้รวม']:,.2f}\", \"บาท\" )"
+      ],
+      "metadata": {
+        "id": "N6gaDd3cGyAy"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# โรงเรียนไหนมีผู้ลงทะเบียนมากที่สุด\n",
+        "top_school = q4_pandas.loc[ q4_pandas[\"จำนวนผู้ลงทะเบียน\"].idxmax() ]\n",
+        "\n",
+        "plt.figure(figsize=(10, 6))\n",
+        "plt.bar( q4_pandas[\"โรงเรียน\"], q4_pandas[\"จำนวนผู้ลงทะเบียน\"] )\n",
+        "plt.title( \"จำนวนผู้ลงทะเบียนแยกตามโรงเรียน\", fontproperties=thai_font )\n",
+        "plt.xlabel( \"โรงเรียน\", fontproperties=thai_font )\n",
+        "plt.ylabel( \"จำนวนผู้ลงทะเบียน (คน)\", fontproperties=thai_font )\n",
+        "plt.xticks( rotation=45, ha=\"right\", fontproperties=thai_font )\n",
+        "plt.yticks(fontproperties=thai_font)\n",
+        "\n",
+        "plt.tight_layout()\n",
+        "plt.show()\n",
+        "\n",
+        "\n",
+        "print( \"สรุปผล: โรงเรียนที่มีนักเรียนลงทะเบียนมากที่สุดคือ\", top_school[\"โรงเรียน\"], \"จำนวน\", top_school[\"จำนวนผู้ลงทะเบียน\"], \"คน\" )"
+      ],
+      "metadata": {
+        "id": "V7GPbEhCG6mS"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# จากการวิเคราะห์ข้อมูลพบว่า โรงเรียนแก่นนครวิทยาลัย มีนักเรียนลงทะเบียนมากที่สุด จำนวน 52 คน แสดงให้เห็นว่าเป็นกลุ่มเป้าหมายที่มีความสนใจในการเรียนสูง คอร์สที่มีผู้สมัครมากที่สุดมีทั้งหมด 8 คอร์ส โดยมีผู้สมัครเท่ากันที่ 40 คน ได้แก่ คณิตศาสตร์ ม.ปลาย, ฟิสิกส์ ม.ปลาย, เคมี ม.ปลาย, ชีววิทยา ม.ปลาย, คณิตศาสตร์ A-Level, ฟิสิกส์ A-Level, ภาษาอังกฤษ A-Level และเคมี A-Level นอกจากนี้ คณิตศาสตร์ A-Level เป็นคอร์สที่สร้างรายได้สูงที่สุด โดยมีรายได้รวม 132,825 บาท ดังนั้นโรงเรียนควรพิจารณาเพิ่มรอบเรียนและจัดสรรที่นั่งสำหรับคอร์สที่ได้รับความนิยม รวมถึงใช้ข้อมูลของโรงเรียนและคอร์สที่มีความต้องการสูงในการวางแผนการตลาดต่อไปครับ"
+      ],
+      "metadata": {
+        "id": "32cfatKdHH9-"
+      }
+    }
+  ]
+}
